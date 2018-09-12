@@ -6,10 +6,29 @@ public class DBTest : MonoBehaviour {
     public static string tableName = "test";
 
     private void Start() {
-        //InsertExample ();
-        //or
-        //InsertAllExample ();
-        //ReadExample ();
+        exampleTwo ();
+    }
+
+    // insertAll - readAll - deleteAll - readAll
+    void exampleOne () {
+        InsertAllExample ();
+        Debug.Log ("All was inserted");
+        ReadExample (); 
+        DeleteAllExample ();
+        Debug.Log ("All was deleted, if you see after that something like data, then script works not properly");
+        ReadExample ();
+    }
+
+    void exampleTwo () {
+        InsertAllExample ();
+        Debug.Log ("All was inserted");
+        ReadExample ();
+        DeleteExample ("testF1", "41");
+        Debug.Log ("Now you should see only 51 52 53");
+        ReadExample ();
+        DeleteExample ("testF2", "52");
+        Debug.Log ("All was deleted, if you see after that something like data, then script works not properly");
+        ReadExample ();
     }
 
     void InsertAllExample () {
@@ -39,12 +58,28 @@ public class DBTest : MonoBehaviour {
     void ReadExample () {
         var dbm = new DatabaseManager (dbName);
         dbm.OpenConnection ();
-        var a = dbm.Read (tableName, DatabaseManager.SELECT_ALL_COLLUMNS);
+        var a = dbm.Read (tableName, DatabaseManager.ALL_COLLUMNS);
         foreach (var item in a) {
             var arr = item as ArrayList;
+            string row = "";
             foreach (var i in arr)
-                Debug.Log("v " + i);
+                row += i + "   ";
+            Debug.Log (row);
         }
+        dbm.CloseConnection ();
+    }
+
+    void DeleteAllExample () {
+        var dbm = new DatabaseManager (dbName);
+        dbm.OpenConnection ();
+        dbm.DeleteAll (tableName);
+        dbm.CloseConnection ();
+    }
+
+    void DeleteExample (string key, string value) {
+        var dbm = new DatabaseManager (dbName);
+        dbm.OpenConnection ();
+        dbm.Delete (tableName, key, value);
         dbm.CloseConnection ();
     }
 }
