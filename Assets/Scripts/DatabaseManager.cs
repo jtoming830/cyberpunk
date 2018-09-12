@@ -48,7 +48,6 @@ public class DatabaseManager {
 		}
 		reader.Close ();
 		reader = null;
-		Debug.Log (result.Count);
 		return result;
 	}
 
@@ -58,4 +57,21 @@ public class DatabaseManager {
 		DisposeCommand ();
 		return result;
 	}
+
+    public void Insert (string tableName, ArrayList data) {
+        var bufData = "";
+        foreach (var i in data)
+            bufData += "'" + i + "', ";
+        var end = bufData.Length;
+        bufData = bufData.Remove(end - 2);
+        CreateCommand ("INSERT INTO " + tableName + " VALUES (" + bufData + ")");
+        Debug.Log ("INSERT INTO " + tableName + " VALUES (" + bufData + ")");
+        dbcmd.ExecuteNonQuery ();
+        DisposeCommand ();
+    }
+
+    public void InsertAll (string tableName, ArrayList data) {
+        foreach (var item in data)
+            Insert (tableName, item as ArrayList);
+    }
 }
